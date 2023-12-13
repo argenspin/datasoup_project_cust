@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="project_sale_action" model="ir.actions.act_window">
+        <field name="name">Sales Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale" />
+        <field name="context">{'default_project_id': active_id}</field>
+        <field name="domain">[('project_id', '=', active_id)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+            </p>
+            <p> Once the quotation is confirmed, it becomes a sales order.<br /> You will be able to
+                create an invoice and collect the payment. </p>
+        </field>
+    </record>
+
+    <!--Project
+    manufacturing order action -->
+    <record id="project_mrp_action" model="ir.actions.act_window">
+        <field name="name">Manufacturing Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.production</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+        <field name="view_id" eval="False" />
+        <field name="search_view_id" ref="mrp.view_mrp_production_filter" />
+        <field name="context">{'default_company_id': allowed_company_ids[0],'default_project_id':
+            active_id}</field>
+        <field name="domain">[('picking_type_id.active', '=', True),('project_id', '=', active_id)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No manufacturing order found. Let's create one.
+            </p>
+            <p> Consume <a name="%(product.product_template_action)d" type='action' tabindex="-1">
+                components</a> and build finished products using <a
+                    name="%(mrp.mrp_bom_form_action)d" type='action' tabindex="-1">bills of
+                materials</a>
+            </p>
+        </field>
+    </record>
+
+    <record id="project_purchase_action" model="ir.actions.act_window">
+        <field name="name">Purchases</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" eval="False" />
+        <field name="domain">[('project_id', '=', active_id)]</field>
+        <field name="search_view_id" ref="purchase.view_purchase_order_filter" />
+        <field name="context">{'default_project_id': active_id}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No request for quotation found. Let's create one!
+            </p>
+            <p>
+                Requests for quotation are documents that will be sent to your suppliers to request
+                prices for different products you consider buying.
+                Once an agreement has been found with the supplier, they will be confirmed and
+                turned into purchase orders.
+            </p>
+        </field>
+    </record>
+
+
+    <!-- <record id="project_product_action" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="stock.product_template_search_form_view_stock"/>
+            <field name="context">{'default_detailed_type': 'product', 'default_project_id': active_id}</field>
+            <field name="domain">[('project_ids', 'in', [active_id])]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No product found. Let's create one!
+                </p>
+                <p>
+                Track your stock quantities by creating storable products.
+                </p>
+            </field>
+        </record> -->
+
+
+    <record id="project_product_action" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.product.line</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'default_project_id': active_id}</field>
+        <field name="domain">[('project_id', '=', active_id)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No product found. Let's create one!
+            </p>
+        </field>
+    </record>
+
+    <record id="project_product_line_tree" model="ir.ui.view">
+        <field name="name">project.product.line.tree</field>
+        <field name="model">project.product.line</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" create="1">
+                <field name="product_id" context="{'default_detailed_type':'product'}" />
+                <!-- <field name="currency_id" invisible="1"/> -->
+
+                <field name="default_code" optional="show" />
+                <field name="responsible_id" widget="many2one_avatar_user"
+                    groups="stock.group_stock_user" />
+
+                <field name="product_tag_ids" widget="many2many_tags"
+                    options="{'color_field': 'color'}" optional="show" />
+                <field name="list_price" string="Sales Price" widget="monetary"
+                    options="{'currency_field': 'currency_id'}" optional="show" />
+                <field name="standard_price" widget="monetary"
+                    options="{'currency_field': 'cost_currency_id'}" optional="show" readonly="1" />
+                <field name="categ_id" optional="hide" />
+                <field name="qty_available" optional="show" decoration-danger="qty_available &lt; 0"
+                    groups="stock.group_stock_user" />
+                <field name="virtual_available" optional="show"
+                    decoration-danger="virtual_available &lt; 0" decoration-bf="1"
+                    groups="stock.group_stock_user" />
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="project_form_inherit" model="ir.ui.view">
+        <field name="name">project.form.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project" />
+        <field name="arch" type="xml">
+            <xpath expr='//button[@name="%(project.project_collaborator_action)d"]' position="after">
+
+                <button class="oe_stat_button"
+                    name="%(datasoup_project_cust.project_product_action)d" type="action"
+                    icon="fa-database">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="product_count" nolabel="1" />
+                        </span>
+                        <span class="o_stat_text">
+                            Products
+                        </span>
+                    </div>
+                </button>
+                <button class="oe_stat_button" name="%(datasoup_project_cust.project_sale_action)d"
+                    type="action" icon="fa-dollar">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="sale_order_count" nolabel="1" />
+                        </span>
+                        <span class="o_stat_text">
+                            Sales
+                        </span>
+                    </div>
+                </button>
+
+                <button class="oe_stat_button" name="%(datasoup_project_cust.project_purchase_action)d"
+                    type="action" icon="fa-credit-card">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="purchase_order_count" nolabel="1" />
+                        </span>
+                        <span class="o_stat_text">
+                            Purchases
+                        </span>
+                    </div>
+                </button>
+
+                <button class="oe_stat_button" name="%(datasoup_project_cust.project_mrp_action)d"
+                    type="action" icon="fa-gears">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="mrp_production_count" nolabel="1" />
+                        </span>
+                        <span class="o_stat_text">
+                            Manufacturing
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Code to add project_id field to Quotations Tree View -->
+    <record id="sale_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree" />
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="user_id"]' position="after">
+                <field name="project_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Code to add project_id field to Quotations Tree View -->
+    <record id="sale_quot_form_inherit" model="ir.ui.view">
+        <field name="name">sale.quot.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding" />
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="user_id"]' position="after">
+                <field name="project_id" />
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Code to add project_id field to Manufacturing Tree View -->
+    <record id="mrp_order_form_inherit" model="ir.ui.view">
+        <field name="name">mrp.order.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view" />
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="product_id"]' position="after">
+                <field name="project_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Code to add project_id field to Purchase Tree View -->
+    <record id="purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="currency_id"]' position="after">
+                <field name="project_id" />
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Code to make tree view as default for project -->
+    <record id="open_project_all" model="ir.actions.act_window.view">
+        <field name="act_window_id" ref="project.open_view_project_all" />
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="project.view_project" />
+    </record>
+
+
+    <!-- Views and Actions for Products Section in project -->
+
+
+    <!-- <record id ="sale_project_product_form_inherit" model="ir.ui.view">
+            <field name="name">project.sale.project.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="product_tag_ids"]' position="after">
+                    <field name="project_ids" widget="many2many_tags"/>
+                </xpath>
+            </field>
+        </record> -->
+
+
+</odoo>
