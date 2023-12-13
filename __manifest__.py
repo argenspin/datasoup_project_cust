@@ -1,7 +1,7 @@
 {
-    'name': "Project Extensions",
+    'name': "Datasoup Project Extensions",
     'version': '1.0',
-    'summary': "Extended Project Functionalities by DataSoup",
+    'summary': "Integration of Sales, Purchase and Manufacturing apps with Project",
     'description': "Connects Project with Sales, Manufacturing and Inventory",
     'author':'DataSoup',
     'category': 'Services/Project',
