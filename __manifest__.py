@@ -5,10 +5,12 @@
     'description': "Connects Project with Sales, Manufacturing and Inventory",
     'author':'DataSoup',
     'category': 'Services/Project',
-    'depends': ['stock','product','purchase','sale','sale_management','mrp','project'],
+    'depends': ['stock','product','datasoup_purchase','sale_management','mrp','project'],
     'data': [
         'security/ir.model.access.csv',
         'views/project_extended_views.xml',
+        'views/sale_views.xml',
+        'views/mrp_views.xml',
     ],
     
     'application': False,
