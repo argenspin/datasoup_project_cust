@@ -65,17 +65,18 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     def create(self,vals):
-        new_line = super(SaleOrderLine,self).create(vals)
-        if new_line.order_id.project_id:
-            self.env['project.product.line'].create({
-                'product_template_id': new_line.product_template_id.id,
-                'product_id' : new_line.product_id.id,
-                'sale_product_name': new_line.name,
-                'project_id': new_line.order_id.project_id.id,
-                'sale_order_id': new_line.order_id.id,
-                'sale_line_id': new_line.id,
-            })
-        return new_line
+        new_lines = super(SaleOrderLine,self).create(vals)
+        for new_line in new_lines:
+            if new_line.order_id.project_id:
+                self.env['project.product.line'].create({
+                    'product_template_id': new_line.product_template_id.id,
+                    'product_id' : new_line.product_id.id,
+                    'sale_product_name': new_line.name,
+                    'project_id': new_line.order_id.project_id.id,
+                    'sale_order_id': new_line.order_id.id,
+                    'sale_line_id': new_line.id,
+                })
+        return new_lines.ids
 
     
     @api.onchange('name')
