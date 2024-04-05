@@ -76,7 +76,7 @@ class SaleOrderLine(models.Model):
                     'sale_order_id': new_line.order_id.id,
                     'sale_line_id': new_line.id,
                 })
-        return new_lines.ids
+        return new_lines
 
     
     @api.onchange('name')
