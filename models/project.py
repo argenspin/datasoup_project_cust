@@ -76,13 +76,13 @@ class Projectdocument(models.Model):
                     project.customer_invoice_count +=1
 
     def action_view_customer_invoices(self):
-        action = self.env.ref('account.action_move_out_invoice_type').read()[0]
+        action = self.sudo().env.ref('account.action_move_out_invoice_type').read()[0]
         action['domain'] = [('project_id','=',self.id), ('move_type','in',['out_invoice', 'out_refund'])]
         action['context'] = {'default_move_type':'out_invoice','default_project_id':self.id, 'default_partner_id': self.partner_id.id}
         return action
     
     def action_view_vendor_bills(self):
-        action = self.env.ref('account.action_move_in_invoice_type').read()[0]
+        action = self.sudo().env.ref('account.action_move_in_invoice_type').read()[0]
         action['domain'] = [('project_id','=',self.id), ('move_type','in',['in_invoice', 'in_refund'])]
         action['context'] = {'default_move_type':'in_invoice','default_project_id':self.id, 'default_partner_id': self.partner_id.id}
         return action
