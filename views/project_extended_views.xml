@@ -143,6 +143,10 @@
         <field name="model">project.project</field>
         <field name="inherit_id" ref="project.edit_project" />
         <field name="arch" type="xml">
+            <xpath expr='//button[@name="%(project.project_collaborator_action)d"]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
             <xpath expr='//button[@name="%(project.project_collaborator_action)d"]' position="after">
 
                 <!-- <button class="oe_stat_button"
@@ -201,6 +205,30 @@
                         </span>
                         <span class="o_stat_text">
                             Manufacturing
+                        </span>
+                    </div>
+                </button>
+
+                <button class="oe_stat_button" name="action_view_customer_invoices"
+                    type="object" icon="fa-pencil-square-o">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="customer_invoice_count" nolabel="1" />
+                        </span>
+                        <span class="o_stat_text">
+                            Invoices
+                        </span>
+                    </div>
+                </button>
+
+                <button class="oe_stat_button" name="action_view_vendor_bills"
+                    type="object" icon="fa-pencil-square-o">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="vendor_bill_count" nolabel="1" />
+                        </span>
+                        <span class="o_stat_text">
+                            Vendor Bills
                         </span>
                     </div>
                 </button>

@@ -10,6 +10,7 @@
         'security/ir.model.access.csv',
         'views/project_extended_views.xml',
         'views/sale_views.xml',
+        "views/account_move_views.xml",
         'views/mrp_views.xml',
     ],
     

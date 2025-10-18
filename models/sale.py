@@ -61,6 +61,17 @@ class Projectsale(models.Model):
             'view_mode': 'form,tree',
         }
     
+    def _prepare_invoice(self):
+        """
+        Add project_id to invoice from sale order
+        """
+        self.ensure_one()
+        res: dict = super()._prepare_invoice()
+        res.update({
+            'project_id': self.project_id.id,
+        })
+        return res
+
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 

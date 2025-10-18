@@ -1,5 +1,5 @@
 from odoo.exceptions import ValidationError
-from odoo import fields,models,api
+from odoo import fields,models,api, _
 import logging
 
 class Projectdocument(models.Model):
@@ -61,3 +61,28 @@ class Projectdocument(models.Model):
         active_ids = self.env.context.get('active_ids')
         logger.error("active_ids" + str(active_ids))
 
+    account_move_ids = fields.One2many('account.move','project_id',string="Invoices / Bills")
+    vendor_bill_count = fields.Integer(compute='_compute_invoice_bill_count')
+    customer_invoice_count = fields.Integer(compute='_compute_invoice_bill_count')
+
+    def _compute_invoice_bill_count(self):
+        for project in self:
+            project.vendor_bill_count = 0
+            project.customer_invoice_count = 0
+            for move in project.account_move_ids:
+                if move.move_type in ['in_invoice','in_refund']:
+                    project.vendor_bill_count +=1
+                elif move.move_type in ['out_invoice','out_refund']:
+                    project.customer_invoice_count +=1
+
+    def action_view_customer_invoices(self):
+        action = self.env.ref('account.action_move_out_invoice_type').read()[0]
+        action['domain'] = [('project_id','=',self.id), ('move_type','in',['out_invoice', 'out_refund'])]
+        action['context'] = {'default_move_type':'out_invoice','default_project_id':self.id, 'default_partner_id': self.partner_id.id}
+        return action
+    
+    def action_view_vendor_bills(self):
+        action = self.env.ref('account.action_move_in_invoice_type').read()[0]
+        action['domain'] = [('project_id','=',self.id), ('move_type','in',['in_invoice', 'in_refund'])]
+        action['context'] = {'default_move_type':'in_invoice','default_project_id':self.id, 'default_partner_id': self.partner_id.id}
+        return action
