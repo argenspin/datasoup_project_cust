@@ -12,6 +12,7 @@
         'views/sale_views.xml',
         "views/account_move_views.xml",
         'views/mrp_views.xml',
+        'views/project_timesheet_views.xml',
     ],
     
     'application': False,

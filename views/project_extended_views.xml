@@ -234,6 +234,10 @@
                 </button>
             </xpath>
 
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="total_timesheet_hours" string="Total Worked Hours" readonly="1" widget="float_time"/>
+            </xpath>
+
             <xpath expr="//page[@name='description']" position="after">
                 <page string="Products" autofocus="autofocus">
                     <field name="product_ids" readonly="1">
@@ -245,6 +249,16 @@
                             <button name="action_view_mrp_order" type="object" class="btn-info" string="View Order" attrs="{'invisible': [('state','=','mrp_to_do')]}"/>
                             <field name="state" widget="badge" decoration-warning="state=='mrp_to_do'" decoration-muted="state=='mrp_order'" decoration-info="state=='mrp_confirm'" decoration-primary="state=='mrp_in_progress'" decoration-success="state=='mrp_complete'" decoration-danger="state=='order_cancel'"/>
 
+                        </tree>
+                    </field>
+                </page>
+                <page string="Timesheets">
+                    <field name="project_timesheet_ids">
+                        <tree>
+                            <field name="date" string="Date"/>
+                            <field name="description" string="Description"/>
+                            <field name="total_hours" string="Total Hours" widget="float_time" sum="Total Hours"/>
+                            <field name="total_employees" string="Total Workers"/>
                         </tree>
                     </field>
                 </page>
