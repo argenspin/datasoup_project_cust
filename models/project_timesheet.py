@@ -23,7 +23,7 @@ class ProjectTimesheetLine(models.Model):
     _name = 'project.timesheet.line'
     date = fields.Date(string="Date", related="timesheet_id.date", store=True)
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True)
-    timesheet_id = fields.Many2one('project.timesheet', string="Timesheet")
+    timesheet_id = fields.Many2one('project.timesheet', string="Timesheet", ondelete='cascade')
     task_id = fields.Many2one('project.task', string="Task")
     hours = fields.Float(string="Hours")
     description = fields.Text(string="Description")
